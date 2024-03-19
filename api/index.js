@@ -28,15 +28,20 @@ app.get('/test', (req, res) => {
 
 app.post('/register', async (req, res) => {
     const { name, email, password } = req.body;
-    const userDoc = await User.create({
-        name,
-        email,
-        password: bcrypt.hashSync(password, bcryptSalt)
-    });
+    try {
+        const userDoc = await User.create({
+            name,
+            email,
+            password: bcrypt.hashSync(password, bcryptSalt)
+        });
 
-    res.json(userDoc)
+        res.json(userDoc)
+    } catch (error) {
+        res.status(422).json(error)
+    }
 
 })
+
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

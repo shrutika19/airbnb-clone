@@ -7,13 +7,19 @@ const RegisterPage = () => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
 
-    const submitHandler = (e) => {
+    const submitHandler = async (e) => {
         e.preventDefault();
-        axios.post('/register', {
-            name,
-            email,
-            password
-        })
+        try {
+            await axios.post('/register', {
+                name,
+                email,
+                password
+            });
+
+            alert('Registration successful. Now you can log in.');
+        } catch (error) {
+            alert('User already exists. Please Login');
+        }
     }
 
     return (
