@@ -7,7 +7,7 @@ const RegisterPage = () => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
 
-    const submitHandler = async (e) => {
+    const registerSubmitHandler = async (e) => {
         e.preventDefault();
         try {
             await axios.post('/register', {
@@ -20,13 +20,14 @@ const RegisterPage = () => {
         } catch (error) {
             alert('User already exists. Please Login');
         }
+
     }
 
     return (
         <div className='mt-4 grow flex items-center justify-around'>
             <div className='mb-64' >
                 <h1 className='text-4xl text-center mb-4'>Register</h1>
-                <form className='max-w-md mx-auto ' onSubmit={submitHandler}>
+                <form className='max-w-md mx-auto ' onSubmit={registerSubmitHandler}>
                     <input
                         type='text'
                         placeholder='Your Name'
