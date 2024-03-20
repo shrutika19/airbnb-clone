@@ -106,6 +106,9 @@ app.get('/profile', (req, res) => {
     }
 })
 
+app.post('/logout', (req, res) => {
+    res.cookie('token', '').json(true);
+})
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
