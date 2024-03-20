@@ -3,7 +3,8 @@ var cors = require('cors');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const User = require('./models/User.js');
-const bcrypt = require('bcryptjs')
+const bcrypt = require('bcryptjs');
+const cookieParser = require('cookie-parser');
 require('dotenv').config()
 
 const bcryptSalt = bcrypt.genSaltSync(10);
@@ -16,6 +17,7 @@ app.use(cors({
 }));
 
 app.use(express.json());
+app.use(cookieParser());
 
 mongoose.connect(process.env.MONGO_URL);
 
@@ -44,33 +46,65 @@ app.post('/register', async (req, res) => {
 
 });
 
+// app.post('/login', async (req, res) => {
+//     const { email, password } = req.body;
+//     try {
+//         const userDoc = await User.findOne({ email });
+
+//         if (!userDoc) {
+//             return res.status(401).json({ message: 'User not found!' });
+//         }
+//         const isPasswordMatch = bcrypt.compareSync(password, userDoc.password);
+//         if (!isPasswordMatch) {
+//             return res.status(401).json({ message: 'Invalid email or password' });
+//         }
+//         // Generate JWT token
+//         jwt.sign({ email: userDoc.email, id: userDoc._id }, jwtSecret, {}, (error, token) => {
+//             if (error) {
+//                 console.error('JWT signing error:', error);
+//                 return res.status(500).json({ message: 'Failed to generate token' });
+//             }
+//             // Set token as a cookie
+//             res.cookie('token', token, { httpOnly: true });
+//             res.status(200).json({ userDoc, message: 'Login successful!' });
+//         });
+//     } catch (error) {
+//         console.error('Login error:', error);
+//         res.status(500).json({ message: 'Internal server error' });
+//     }
+// });
+
 app.post('/login', async (req, res) => {
     const { email, password } = req.body;
-    try {
-        const userDoc = await User.findOne({ email });
+    const userDoc = await User.findOne({ email });
 
-        if (!userDoc) {
-            return res.status(401).json({ message: 'User not found!' });
-        }
+    if (userDoc) {
         const isPasswordMatch = bcrypt.compareSync(password, userDoc.password);
-        if (!isPasswordMatch) {
-            return res.status(401).json({ message: 'Invalid email or password' });
+        if (isPasswordMatch) {
+            jwt.sign({ email: userDoc.email, id: userDoc._id }, jwtSecret, {}, (error, token) => {
+                if (error) throw error;
+                res.cookie('token', token).json(userDoc);
+            });
+        } else {
+            res.status(422).json('pass not ok')
         }
-        // Generate JWT token
-        jwt.sign({ email: userDoc.email, id: userDoc._id }, jwtSecret, {}, (error, token) => {
-            if (error) {
-                console.error('JWT signing error:', error);
-                return res.status(500).json({ message: 'Failed to generate token' });
-            }
-            // Set token as a cookie
-            res.cookie('token', token, { httpOnly: true });
-            res.status(200).json({ userDoc, message: 'Login successful!' });
-        });
-    } catch (error) {
-        console.error('Login error:', error);
-        res.status(500).json({ message: 'Internal server error' });
+    } else {
+        res.json("not found");
     }
 });
+
+app.get('/profile', (req, res) => {
+    const { token } = req.cookies;
+    if (token) {
+        jwt.verify(token, jwtSecret, {}, async (err, userData) => {
+            if (err) throw err;
+            const { name, email, _id } = await User.findById(userData.id);
+            res.json({ name, email, _id });
+        })
+    } else {
+        res.json(null);
+    }
+})
 
 
 const PORT = process.env.PORT || 3000;

@@ -10,25 +10,36 @@ const LoginPage = () => {
 
     const { setUser } = useContext(UserContext);
 
+    // const loginSubmitHandler = async (e) => {
+    //     e.preventDefault();
+
+    //     try {
+    //         const { data } = await axios.post('/login', {
+    //             email,
+    //             password
+    //         });
+    //         setUser(data.userDoc);
+
+    //         setUser(data.userDoc);
+    //         alert("login success");
+    //         setRedirect(true)
+    //         console.log("response", data.userDoc)
+
+
+    //     } catch (error) {
+    //         alert('Login Failed: User not found');
+    //     }
+    // }
+
     const loginSubmitHandler = async (e) => {
         e.preventDefault();
-
         try {
-            const response = await axios.post('/login', {
-                email,
-                password
-            },);
-            console.log("response", response.data)
-            setUser(response.data);
-            // Check if the response contains the message indicating success
-            if (response.data && response.data.message === 'Login successful!') {
-                alert('Login Successful!');
-                setRedirect(true);
-            } else {
-                alert('Login Failed: Invalid email or password');
-            }
+            const { data } = await axios.post('/login', { email, password });
+            setUser(data);
+            alert('Login success');
+            setRedirect(true);
         } catch (error) {
-            alert('Login Failed: User not found');
+            alert('Login failed');
         }
     }
 
