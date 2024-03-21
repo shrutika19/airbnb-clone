@@ -5,6 +5,8 @@ const jwt = require('jsonwebtoken');
 const User = require('./models/User.js');
 const bcrypt = require('bcryptjs');
 const cookieParser = require('cookie-parser');
+const imageDownloader = require('image-downloader');
+
 require('dotenv').config()
 
 const bcryptSalt = bcrypt.genSaltSync(10);
@@ -17,6 +19,7 @@ app.use(cors({
 }));
 
 app.use(express.json());
+app.use('/uploads', express.static(__dirname + '/assests'))
 app.use(cookieParser());
 
 mongoose.connect(process.env.MONGO_URL);
@@ -108,6 +111,18 @@ app.get('/profile', (req, res) => {
 
 app.post('/logout', (req, res) => {
     res.cookie('token', '').json(true);
+})
+
+
+
+app.post('/upload-by-link', async (req, res) => {
+    const { link } = req.body;
+    const newPhotoName = 'image' + Date.now() + '.jpg';
+    await imageDownloader.image({
+        url: link,
+        dest: __dirname + '/assests/' + newPhotoName,
+    });
+    res.json(newPhotoName)
 })
 
 const PORT = process.env.PORT || 3000;
