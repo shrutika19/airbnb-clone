@@ -6,6 +6,9 @@ const User = require('./models/User.js');
 const bcrypt = require('bcryptjs');
 const cookieParser = require('cookie-parser');
 const imageDownloader = require('image-downloader');
+const multer = require('multer');
+const fs = require('fs');
+
 
 require('dotenv').config()
 
@@ -123,6 +126,20 @@ app.post('/upload-by-link', async (req, res) => {
         dest: __dirname + '/assests/' + newPhotoName,
     });
     res.json(newPhotoName)
+});
+
+const imageMiddleware = multer({ dest: 'assests/' });
+app.post('/upload', imageMiddleware.array('photos', 100), (req, res) => {
+    const uploadedFiles = [];
+    for (let i = 0; i < req.files.length; i++) {
+        const { path, originalname } = req.files[i];
+        const parts = originalname.split('.');
+        const ext = parts[parts.length - 1];
+        const newPath = path + '.' + ext;
+        fs.renameSync(path, newPath);
+        uploadedFiles.push(newPath.replace('assests\\', ''));
+    }
+    res.json(uploadedFiles);
 })
 
 const PORT = process.env.PORT || 3000;
