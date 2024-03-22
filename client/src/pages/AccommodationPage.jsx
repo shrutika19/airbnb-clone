@@ -1,23 +1,40 @@
 import React, { useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, Navigate, useParams } from 'react-router-dom'
 import PerksCheckbox from '../components/PerksCheckbox';
 import TimeDetails from '../components/TimeDetails';
 import PhotoUpload from '../components/PhotoUpload';
+import axios from 'axios';
 
 const AccommodationPage = () => {
     const { action } = useParams();
 
+    const [addedPhotos, setAddedPhotos] = useState([]);
     const [title, setTitle] = useState('');
     const [address, setAddress] = useState('');
     const [description, setDescription] = useState('');
     const [additionalInfo, setAdditionalInfo] = useState('');
     const [perks, setPerks] = useState([]);
-
+    const [checkIn, setCheckIn] = useState('');
+    const [checkOut, setCheckOut] = useState('');
+    const [maxGuests, setMaxGuests] = useState(1);
+    const [redirectToBackPage, setRedirectToBackPage] = useState(false);
 
     const inputHeader = (text) => {
         return (
             <h2 className='text-xl mt-4 font-semibold'>{text}</h2>
         )
+    }
+
+    const handleFormSubmit = async (e) => {
+        e.preventDefault();
+        await axios.post('/places', {
+            title, address, addedPhotos, description, perks, additionalInfo, checkIn, checkOut, maxGuests
+        });
+        setRedirectToBackPage(true);
+    }
+
+    if (redirectToBackPage && !action) {
+        return <Navigate to={'/account/places'} />
     }
 
     return (
@@ -39,7 +56,7 @@ const AccommodationPage = () => {
             {
                 action === 'new' && (
                     <div>
-                        <form>
+                        <form onSubmit={handleFormSubmit}>
                             {inputHeader('Title')}
                             <input
                                 type='text'
@@ -57,7 +74,7 @@ const AccommodationPage = () => {
                             />
 
                             {inputHeader('Photos')}
-                            <PhotoUpload />
+                            <PhotoUpload addedPhotos={addedPhotos} onChange={setAddedPhotos} />
 
                             {inputHeader('Description')}
                             <textarea
@@ -72,7 +89,14 @@ const AccommodationPage = () => {
                             <textarea value={additionalInfo} onChange={e => setAdditionalInfo(e.target.value)} />
 
                             {inputHeader('Details')}
-                            <TimeDetails />
+                            <TimeDetails
+                                checkIn={checkIn}
+                                setCheckIn={setCheckIn}
+                                checkOut={checkOut}
+                                setCheckOut={setCheckOut}
+                                maxGuests={maxGuests}
+                                setMaxGuests={setMaxGuests}
+                            />
 
                             <button className='primary my-4'>Save</button>
                         </form>

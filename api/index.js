@@ -3,6 +3,7 @@ var cors = require('cors');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const User = require('./models/User.js');
+const Accomodation = require('./models/Accomodation.js');
 const bcrypt = require('bcryptjs');
 const cookieParser = require('cookie-parser');
 const imageDownloader = require('image-downloader');
@@ -140,6 +141,20 @@ app.post('/upload', imageMiddleware.array('photos', 100), (req, res) => {
         uploadedFiles.push(newPath.replace('assests\\', ''));
     }
     res.json(uploadedFiles);
+});
+
+app.post('/places', (req, res) => {
+    const { token } = req.cookies;
+    const { title, address, addedPhotos, description, perks, additionalInfo, checkIn, checkOut, maxGuests } = req.body;
+    jwt.verify(token, jwtSecret, {}, async (err, userData) => {
+        if (err) throw err;
+        const accomodationDoc = await Accomodation.create({
+            owner: userData.id,
+            title, address, addedPhotos, description, perks, additionalInfo, checkIn, checkOut, maxGuests
+        })
+        res.json(accomodationDoc)
+    });
+
 })
 
 const PORT = process.env.PORT || 3000;

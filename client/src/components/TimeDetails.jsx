@@ -1,9 +1,7 @@
 import React, { useState } from 'react'
 
-const TimeDetails = () => {
-    const [checkIn, setCheckIn] = useState('');
-    const [checkOut, setCheckOut] = useState('');
-    const [maxGuests, setMaxGuests] = useState(1);
+const TimeDetails = ({ checkIn, setCheckIn, checkOut, setCheckOut, maxGuests, setMaxGuests }) => {
+
     return (
         <>
             <div className='grid gap-2 sm:grid-cols-3'>
