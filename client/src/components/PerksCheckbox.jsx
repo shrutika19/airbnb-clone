@@ -16,32 +16,32 @@ const PerksCheckbox = ({ selected, onChange }) => {
         <>
             <div className='grid mt-2 gap-2 grid-cols-2 md:grid-cols-3 lg:grid-cols-3'>
                 <label className='border  p-4 flex  rounded-2xl gap-2 items-center cursor-pointer'>
-                    <input type="checkbox" name='wifi' onChange={handleCheckBoxClick} />
+                    <input type="checkbox" checked={selected.includes('wifi')} name='wifi' onChange={handleCheckBoxClick} />
                     <FontAwesomeIcon icon={faWifi} />
                     <span>Wifi</span>
                 </label>
                 <label className='border p-4 flex rounded-2xl gap-2 items-center cursor-pointer'>
-                    <input type="checkbox" name='tv' onChange={handleCheckBoxClick} />
+                    <input type="checkbox" checked={selected.includes('tv')} name='tv' onChange={handleCheckBoxClick} />
                     <FontAwesomeIcon icon={faTv} />
                     <span>TV</span>
                 </label>
                 <label className='border p-4 flex rounded-2xl gap-2 items-center cursor-pointer'>
-                    <input type="checkbox" name='parking' onChange={handleCheckBoxClick} />
+                    <input type="checkbox" checked={selected.includes('parking')} name='parking' onChange={handleCheckBoxClick} />
                     <FontAwesomeIcon icon={faCar} />
                     <span>Free parking</span>
                 </label>
                 <label className='border p-4 flex rounded-2xl gap-2 items-center cursor-pointer'>
-                    <input type="checkbox" name='workspace' onChange={handleCheckBoxClick} />
+                    <input type="checkbox" checked={selected.includes('workspace')} name='workspace' onChange={handleCheckBoxClick} />
                     <FontAwesomeIcon icon={faLaptop} />
                     <span>Dedicated workspace</span>
                 </label>
                 <label className='border p-4 flex rounded-2xl gap-2 items-center cursor-pointer'>
-                    <input type="checkbox" name='pets' onChange={handleCheckBoxClick} />
+                    <input type="checkbox" checked={selected.includes('pets')} name='pets' onChange={handleCheckBoxClick} />
                     <FontAwesomeIcon icon={faPaw} />
                     <span>Pets allowed</span>
                 </label>
                 <label className='border p-4 flex rounded-2xl gap-2 items-center cursor-pointer'>
-                    <input type="checkbox" name='pool' onChange={handleCheckBoxClick} />
+                    <input type="checkbox" checked={selected.includes('pool')} name='pool' onChange={handleCheckBoxClick} />
                     <FontAwesomeIcon icon={faPersonSwimming} />
                     <span>Pool</span>
                 </label>
