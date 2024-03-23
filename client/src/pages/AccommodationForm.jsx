@@ -45,10 +45,21 @@ const AccommodationForm = () => {
 
     const handleFormSubmit = async (e) => {
         e.preventDefault();
-        await axios.post('/places', {
+        const formData = {
             title, address, addedPhotos, description, perks, additionalInfo, checkIn, checkOut, maxGuests
-        });
-        setRedirect(true);
+        }
+        if (id) {
+            //update the form
+            await axios.put('/places', {
+                id, ...formData
+            });
+            setRedirect(true);
+        } else {
+            //add new data 
+            await axios.post('/places', formData);
+            setRedirect(true);
+        }
+
     }
 
     if (redirect) {
