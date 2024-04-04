@@ -6,7 +6,7 @@ const IndexPage = () => {
     const [places, setPlaces] = useState([]);
     useEffect(() => {
         axios.get('/places').then(response => {
-            setPlaces([...response.data, ...response.data, ...response.data, ...response.data, ...response.data, ...response.data]);
+            setPlaces([...response.data]);
             console.log(response.data)
         })
     }, [])
@@ -19,8 +19,11 @@ const IndexPage = () => {
                             <img className='rounded-2xl object-cover aspect-square' src={'http://localhost:3000/uploads/' + place.addedPhotos?.[0]} alt="" />
                         )}
                     </div>
-                    <h2 className='text-sm truncate leading-4'> {place.title}</h2>
                     <h3 className='font-semibold '>{place.address}</h3>
+                    <h2 className='text-sm  leading-4 text-gray-500'> {place.title}</h2>
+                    <div className='mt-1'>
+                        <span className='font-semibold'>₹{place.price}</span> per night
+                    </div>
                 </div>
             ))}
         </div>

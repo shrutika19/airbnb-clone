@@ -18,6 +18,7 @@ const AccommodationForm = () => {
     const [checkOut, setCheckOut] = useState('');
     const [maxGuests, setMaxGuests] = useState(1);
     const [redirect, setRedirect] = useState(false);
+    const [price, setPrice] = useState(100);
 
     useEffect(() => {
         if (!id) {
@@ -34,6 +35,7 @@ const AccommodationForm = () => {
             setCheckIn(data.checkIn);
             setCheckOut(data.checkOut);
             setMaxGuests(data.maxGuests);
+            setPrice(data.price);
         })
     }, [id]);
 
@@ -46,7 +48,7 @@ const AccommodationForm = () => {
     const handleFormSubmit = async (e) => {
         e.preventDefault();
         const formData = {
-            title, address, addedPhotos, description, perks, additionalInfo, checkIn, checkOut, maxGuests
+            title, address, addedPhotos, description, perks, additionalInfo, checkIn, checkOut, maxGuests, price
         }
         if (id) {
             //update the form
@@ -109,7 +111,11 @@ const AccommodationForm = () => {
                     setCheckOut={setCheckOut}
                     maxGuests={maxGuests}
                     setMaxGuests={setMaxGuests}
+                    price={price}
+                    setPrice={setPrice}
                 />
+
+
 
                 <button className='primary my-4'>Save</button>
             </form>

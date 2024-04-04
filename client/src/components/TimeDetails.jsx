@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 
-const TimeDetails = ({ checkIn, setCheckIn, checkOut, setCheckOut, maxGuests, setMaxGuests }) => {
+const TimeDetails = ({ checkIn, setCheckIn, checkOut, setCheckOut, maxGuests, setMaxGuests, price, setPrice }) => {
 
     return (
         <>
-            <div className='grid gap-2 sm:grid-cols-3'>
+            <div className='grid gap-2 grid-cols-2 md:grid-cols-4'>
                 <div>
                     <h3 className='mt-2 -mb-1'>Check in time</h3>
                     <input
@@ -30,6 +30,14 @@ const TimeDetails = ({ checkIn, setCheckIn, checkOut, setCheckOut, maxGuests, se
                         placeholder='4'
                         value={maxGuests}
                         onChange={e => setMaxGuests(e.target.value)}
+                    />
+                </div>
+                <div>
+                    <h3 className='mt-2 -mb-1'>Price per Night</h3>
+                    <input
+                        type="number"
+                        value={price}
+                        onChange={e => setPrice(e.target.value)}
                     />
                 </div>
             </div>

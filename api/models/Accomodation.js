@@ -10,7 +10,8 @@ const accomodationSchema = new mongoose.Schema({
     additionalInfo: String,
     checkIn: Number,
     checkOut: Number,
-    maxGuests: Number
+    maxGuests: Number,
+    price: Number
 });
 
 const AccomodationModel = mongoose.model('Accomodation', accomodationSchema);

@@ -145,12 +145,12 @@ app.post('/upload', imageMiddleware.array('photos', 100), (req, res) => {
 
 app.post('/places', (req, res) => {
     const { token } = req.cookies;
-    const { title, address, addedPhotos, description, perks, additionalInfo, checkIn, checkOut, maxGuests } = req.body;
+    const { title, address, addedPhotos, description, perks, additionalInfo, checkIn, checkOut, maxGuests, price } = req.body;
     jwt.verify(token, jwtSecret, {}, async (err, userData) => {
         if (err) throw err;
         const accomodationDoc = await Accomodation.create({
             owner: userData.id,
-            title, address, addedPhotos, description, perks, additionalInfo, checkIn, checkOut, maxGuests
+            title, address, addedPhotos, description, perks, additionalInfo, checkIn, checkOut, maxGuests, price
         })
         res.json(accomodationDoc)
     });
@@ -172,13 +172,14 @@ app.get('/places/:id', async (req, res) => {
 
 app.put('/places', async (req, res) => {
     const { token } = req.cookies;
-    const { id, title, address, addedPhotos, description, perks, additionalInfo, checkIn, checkOut, maxGuests } = req.body;
+    const { id, title, address, addedPhotos, description, perks, additionalInfo, checkIn, checkOut, maxGuests, price } = req.body;
+    console.log({ price })
     jwt.verify(token, jwtSecret, {}, async (err, userData) => {
         if (err) throw err;
         const placeDoc = await Accomodation.findById(id);
         if (userData.id === placeDoc.owner.toString()) {
             placeDoc.set({
-                title, address, addedPhotos, description, perks, additionalInfo, checkIn, checkOut, maxGuests
+                title, address, addedPhotos, description, perks, additionalInfo, checkIn, checkOut, maxGuests, price
             })
             await placeDoc.save();
             res.json('ok');
