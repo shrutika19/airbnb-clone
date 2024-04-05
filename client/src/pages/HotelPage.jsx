@@ -103,7 +103,26 @@ const HotelPage = () => {
 
             </div>
             <div className='my-4'>
+                <h2 className='font-semibold text-xl'>Details</h2>
                 {place.description}
+            </div>
+            <div className='grid grid-cols-2'>
+                <div>
+                    Check In: {place.checkIn}:00 <br />
+                    Check Out: {place.checkOut}:00 <br />
+                    Maximum Guests: {place.maxGuests}
+                </div>
+                <div>
+                    <div className='bg-white shadow p-4 rounded-2xl'>
+                        <div className='text-2xl text-center'>
+                            Price: ₹{place.price} night
+                        </div>
+                        <div>
+                            <input type="date" />
+                        </div>
+                        <button className="primary">Reserve</button>
+                    </div>
+                </div>
             </div>
         </div>
 
