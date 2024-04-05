@@ -66,9 +66,16 @@ const HotelPage = () => {
     return (
         <div className='mt-8 bg-gray-100 -mx-8 px-8 py-8'>
             <h1 className='text-2xl'>{place.title}</h1>
-            <a className=' my-2 block font-semibold underline' target='_blank' href={'https://maps.google.com/?q=' + place.address}>{place.address}</a>
+            <a className='flex gap-1 my-2  font-semibold underline' target='_blank' href={'https://maps.google.com/?q=' + place.address}>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
+                </svg>
+
+                {place.address}
+            </a>
             <div className="relative">
-                <div className="grid gap-2 grid-cols-[2fr_1fr]">
+                <div className="grid gap-2 grid-cols-[2fr_1fr] rounded-3xl overflow-hidden">
                     <div>
                         {place.addedPhotos?.[0] && (
                             <div>
@@ -93,6 +100,10 @@ const HotelPage = () => {
                     </button>
 
                 </div>
+
+            </div>
+            <div className='my-4'>
+                {place.description}
             </div>
         </div>
 
