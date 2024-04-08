@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faImage } from '@fortawesome/free-solid-svg-icons';
 import BookingWidget from '../components/BookingWidget';
+import PerksData from '../components/PerksData';
 
 
 const HotelPage = () => {
@@ -16,6 +17,7 @@ const HotelPage = () => {
             return
         }
         axios.get(`/places/${id}`).then(response => {
+            console.log(response.data)
             setPlace(response.data);
         })
     }, [id])
@@ -80,18 +82,18 @@ const HotelPage = () => {
                     <div>
                         {place.addedPhotos?.[0] && (
                             <div>
-                                <img className='aspect-square object-cover' src={'http://localhost:3000/uploads/' + place.addedPhotos[0]} alt='' />
+                                <img onClick={() => setShowAllPhotos(true)} className='cursor-pointer aspect-square object-cover' src={'http://localhost:3000/uploads/' + place.addedPhotos[0]} alt='' />
 
                             </div>
                         )}
                     </div>
                     <div className='grid'>
                         {place.addedPhotos?.[1] && (
-                            <img className='aspect-square object-cover' src={'http://localhost:3000/uploads/' + place.addedPhotos[1]} alt='' />
+                            <img onClick={() => setShowAllPhotos(true)} className='cursor-pointer aspect-square object-cover' src={'http://localhost:3000/uploads/' + place.addedPhotos[1]} alt='' />
                         )}
                         <div className=' overflow-hidden '>
                             {place.addedPhotos?.[2] && (
-                                <img className='aspect-square object-cover relative top-2' src={'http://localhost:3000/uploads/' + place.addedPhotos[2]} alt='' />
+                                <img onClick={() => setShowAllPhotos(true)} className='cursor-pointer aspect-square object-cover relative top-2' src={'http://localhost:3000/uploads/' + place.addedPhotos[2]} alt='' />
                             )}
                         </div>
                     </div>
@@ -125,6 +127,11 @@ const HotelPage = () => {
                 <div className='mb-4 mt-2 text-sm text-gray-700 leading-5 text-justify'>
                     {place.additionalInfo}
                 </div>
+                <div>
+                    <PerksData perks={place.perks} />
+                </div>
+
+
             </div>
 
         </div>
