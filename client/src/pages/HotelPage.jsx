@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faImage } from '@fortawesome/free-solid-svg-icons';
+import BookingWidget from '../components/BookingWidget';
 
 
 const HotelPage = () => {
@@ -64,7 +65,7 @@ const HotelPage = () => {
     }
 
     return (
-        <div className='mt-8 bg-gray-100 -mx-8 px-8 py-8'>
+        <div className='mt-4 bg-gray-100 -mx-8 px-8 pt-8'>
             <h1 className='text-2xl'>{place.title}</h1>
             <a className='flex gap-1 my-2  font-semibold underline' target='_blank' href={'https://maps.google.com/?q=' + place.address}>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
@@ -102,28 +103,30 @@ const HotelPage = () => {
                 </div>
 
             </div>
-            <div className='my-4'>
-                <h2 className='font-semibold text-xl'>Details</h2>
-                {place.description}
-            </div>
-            <div className='grid grid-cols-2'>
+
+            <div className='mt-8 mb-8 gap-8 grid grid-cols-1 md:grid-cols-[2fr_1fr]'>
                 <div>
+                    <div className='my-4 text-justify'>
+                        <h2 className='font-semibold text-xl '>Details</h2>
+                        {place.description}
+                    </div>
                     Check In: {place.checkIn}:00 <br />
                     Check Out: {place.checkOut}:00 <br />
                     Maximum Guests: {place.maxGuests}
                 </div>
                 <div>
-                    <div className='bg-white shadow p-4 rounded-2xl'>
-                        <div className='text-2xl text-center'>
-                            Price: ₹{place.price} night
-                        </div>
-                        <div>
-                            <input type="date" />
-                        </div>
-                        <button className="primary">Reserve</button>
-                    </div>
+                    <BookingWidget place={place} />
                 </div>
             </div>
+            <div className='bg-white -mx-8 px-8 py-8 border-t'>
+                <div>
+                    <h2 className='font-semibold text-xl '>Additional Info</h2>
+                </div>
+                <div className='mb-4 mt-2 text-sm text-gray-700 leading-5 text-justify'>
+                    {place.additionalInfo}
+                </div>
+            </div>
+
         </div>
 
 
