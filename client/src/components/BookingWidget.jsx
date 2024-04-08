@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { differenceInCalendarDays } from "date-fns";
 
 const ReservationForm = ({ place }) => {
     // Get today's date in the format YYYY-MM-DD
@@ -12,6 +13,12 @@ const ReservationForm = ({ place }) => {
     // State variables for check-in and check-out dates
     const [checkInDate, setCheckInDate] = useState(today);
     const [checkOutDate, setCheckOutDate] = useState(nextWeekDate);
+    const [numberOfGuests, setNumberOfGuests] = useState(1);
+
+    let numberOfDays = 0;
+    if (checkInDate && checkOutDate) {
+        numberOfDays = differenceInCalendarDays(checkOutDate, checkInDate);
+    }
 
     // Handle change in check-in date
     const handleCheckInChange = (e) => {
@@ -50,10 +57,15 @@ const ReservationForm = ({ place }) => {
                     </div>
                     <div className='border-t py-3 px-4'>
                         <label>Guests:</label>
-                        <input type="number" placeholder='4' />
+                        <input type="number" value={numberOfGuests} onChange={e => setNumberOfGuests(e.target.value)} />
                     </div>
                 </div>
-                <button className="primary mt-4">Reserve</button>
+                <button className="primary mt-4">
+                    Reserve
+                    {checkInDate && checkOutDate && (
+                        <span>{differenceInCalendarDays(new Date(checkInDate), new Date(checkOutDate))}</span>
+                    )}
+                </button>
             </div>
         </div>
     );
