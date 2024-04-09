@@ -14,10 +14,12 @@ const ReservationForm = ({ place }) => {
     const [checkInDate, setCheckInDate] = useState(today);
     const [checkOutDate, setCheckOutDate] = useState(nextWeekDate);
     const [numberOfGuests, setNumberOfGuests] = useState(1);
+    const [name, setName] = useState('');
+    const [mobile, setMobile] = useState('')
 
-    let numberOfDays = 0;
+    let numberOfNights = 0;
     if (checkInDate && checkOutDate) {
-        numberOfDays = differenceInCalendarDays(checkOutDate, checkInDate);
+        numberOfNights = differenceInCalendarDays(new Date(checkOutDate), new Date(checkInDate));
     }
 
     // Handle change in check-in date
@@ -59,11 +61,20 @@ const ReservationForm = ({ place }) => {
                         <label>Guests:</label>
                         <input type="number" value={numberOfGuests} onChange={e => setNumberOfGuests(e.target.value)} />
                     </div>
+                    {numberOfNights > 0 && (
+                        <div className='border-t py-3 px-4'>
+                            <label>Name:</label>
+                            <input type="text" value={name} onChange={e => setName(e.target.value)} />
+
+                            <label>Mobile No:</label>
+                            <input type="tel" value={mobile} onChange={e => setMobile(e.target.value)} />
+                        </div>
+                    )}
                 </div>
                 <button className="primary mt-4">
                     Reserve
-                    {checkInDate && checkOutDate && (
-                        <span>{differenceInCalendarDays(new Date(checkInDate), new Date(checkOutDate))}</span>
+                    {numberOfNights > 0 && (
+                        <span className='m-2'>₹{numberOfNights * place.price}</span>
                     )}
                 </button>
             </div>
