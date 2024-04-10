@@ -3,6 +3,7 @@ var cors = require('cors');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const User = require('./models/User.js');
+const Booking = require('./models/Booking.js');
 const Accomodation = require('./models/Accomodation.js');
 const bcrypt = require('bcryptjs');
 const cookieParser = require('cookie-parser');
@@ -189,6 +190,17 @@ app.put('/places', async (req, res) => {
 
 app.get('/places', async (req, res) => {
     res.json(await Accomodation.find())
+})
+
+app.post('/bookings', (req, res) => {
+    const { place, checkInDate, checkOutDate, numberOfGuests, name, mobile, price } = req.body;
+    Booking.create({
+        place, checkInDate, checkOutDate, numberOfGuests, name, mobile, price
+    }).then((doc) => {
+        res.json(doc);
+    }).catch((err) => {
+        throw err;
+    })
 })
 
 const PORT = process.env.PORT || 3000;

@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import { differenceInCalendarDays } from "date-fns";
+import axios from 'axios';
+import { Navigate } from 'react-router-dom';
+
 
 const ReservationForm = ({ place }) => {
     // Get today's date in the format YYYY-MM-DD
@@ -16,6 +19,7 @@ const ReservationForm = ({ place }) => {
     const [numberOfGuests, setNumberOfGuests] = useState(1);
     const [name, setName] = useState('');
     const [mobile, setMobile] = useState('')
+    const [redirect, setRedirect] = useState('');
 
     let numberOfNights = 0;
     if (checkInDate && checkOutDate) {
@@ -39,6 +43,20 @@ const ReservationForm = ({ place }) => {
         console.log(selectedDate)
         setCheckOutDate(selectedDate);
     };
+
+    const bookingHandler = async () => {
+        const response = await axios.post('/bookings', {
+            checkInDate, checkOutDate, numberOfGuests, name, mobile,
+            place: place._id,
+            price: numberOfNights * place.price,
+        });
+        const bookingId = response.data._id;
+        setRedirect(`/account/bookings/${bookingId}`);
+    }
+
+    if (redirect) {
+        return <Navigate to={redirect} />
+    }
 
     return (
         <div>
@@ -71,7 +89,7 @@ const ReservationForm = ({ place }) => {
                         </div>
                     )}
                 </div>
-                <button className="primary mt-4">
+                <button onClick={bookingHandler} className="primary mt-4">
                     Reserve
                     {numberOfNights > 0 && (
                         <span className='m-2'>₹{numberOfNights * place.price}</span>
