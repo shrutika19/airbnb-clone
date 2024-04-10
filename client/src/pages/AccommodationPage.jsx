@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom'
 import AccommodationForm from './AccommodationForm';
 import AccountNav from '../components/AccountNav';
 import axios from 'axios';
+import AccommodationImages from '../components/AccommodationImages';
 
 
 const AccommodationPage = () => {
@@ -28,9 +29,10 @@ const AccommodationPage = () => {
                 {places.length > 0 && places.map((place, index) => (
                     <Link key={index} to={'/account/places/' + place._id} className='flex cursor-pointer gap-4 bg-gray-100 p-4 rounded-2xl'>
                         <div className='flex w-32 h-32 bg-gray-300 grow shrink-0'>
-                            {place.addedPhotos.length > 0 && (
+                            {/* {place.addedPhotos.length > 0 && (
                                 <img className='object-cover' src={'http://localhost:3000/uploads/' + place.addedPhotos[1]} alt='' />
-                            )}
+                            )} */}
+                            <AccommodationImages place={place} />
                         </div>
                         <div className='grow-0 shrink'>
                             <h2 className='text-xl'> {place.title}</h2>

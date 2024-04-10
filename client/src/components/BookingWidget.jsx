@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { differenceInCalendarDays } from "date-fns";
 import axios from 'axios';
 import { Navigate } from 'react-router-dom';
+import { UserContext } from '../context/UserContext';
 
 
 const ReservationForm = ({ place }) => {
@@ -20,6 +21,14 @@ const ReservationForm = ({ place }) => {
     const [name, setName] = useState('');
     const [mobile, setMobile] = useState('')
     const [redirect, setRedirect] = useState('');
+
+    const { user } = useContext(UserContext);
+
+    useEffect(() => {
+        if (user) {
+            setName(user.name);
+        }
+    }, [user])
 
     let numberOfNights = 0;
     if (checkInDate && checkOutDate) {
@@ -48,7 +57,7 @@ const ReservationForm = ({ place }) => {
         const response = await axios.post('/bookings', {
             checkInDate, checkOutDate, numberOfGuests, name, mobile,
             place: place._id,
-            price: numberOfNights * place.price,
+            price: numberOfNights * place.price * numberOfGuests,
         });
         const bookingId = response.data._id;
         setRedirect(`/account/bookings/${bookingId}`);
@@ -92,7 +101,7 @@ const ReservationForm = ({ place }) => {
                 <button onClick={bookingHandler} className="primary mt-4">
                     Reserve
                     {numberOfNights > 0 && (
-                        <span className='m-2'>₹{numberOfNights * place.price}</span>
+                        <span className='m-2'>₹{numberOfNights * place.price * numberOfGuests}</span>
                     )}
                 </button>
             </div>

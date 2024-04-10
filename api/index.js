@@ -29,6 +29,14 @@ app.use(cookieParser());
 
 mongoose.connect(process.env.MONGO_URL);
 
+function getUserDataFromReq(req) {
+    return new Promise((resolve, reject) => {
+        jwt.verify(req.cookies.token, jwtSecret, {}, async (err, userData) => {
+            if (err) throw err;
+            resolve(userData);
+        })
+    })
+}
 
 app.get('/', (req, res) => {
     res.send('Hello, World!');
@@ -192,15 +200,24 @@ app.get('/places', async (req, res) => {
     res.json(await Accomodation.find())
 })
 
-app.post('/bookings', (req, res) => {
+app.post('/bookings', async (req, res) => {
+    const userData = await getUserDataFromReq(req);
     const { place, checkInDate, checkOutDate, numberOfGuests, name, mobile, price } = req.body;
     Booking.create({
-        place, checkInDate, checkOutDate, numberOfGuests, name, mobile, price
+        place, checkInDate, checkOutDate, numberOfGuests, name, mobile, price,
+        user: userData.id
     }).then((doc) => {
         res.json(doc);
     }).catch((err) => {
         throw err;
     })
+})
+
+
+
+app.get('/bookings', async (req, res) => {
+    const userData = await getUserDataFromReq(req);
+    res.json(await Booking.find({ user: userData.id }).populate('place'))
 })
 
 const PORT = process.env.PORT || 3000;
