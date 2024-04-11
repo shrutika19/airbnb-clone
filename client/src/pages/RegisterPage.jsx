@@ -1,14 +1,24 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import { validateRegister } from '../validation';
 
 const RegisterPage = () => {
-    const [name, setName] = useState('')
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [validationErrors, setValidationErrors] = useState({});
 
     const registerSubmitHandler = async (e) => {
         e.preventDefault();
+
+        // Validation
+        const errors = validateRegister(name, email, password);
+        if (Object.keys(errors).length > 0) {
+            setValidationErrors(errors);
+            return;
+        }
+
         try {
             await axios.post('/register', {
                 name,
@@ -33,19 +43,25 @@ const RegisterPage = () => {
                         placeholder='Your Name'
                         value={name}
                         onChange={e => setName(e.target.value)}
+                        className={validationErrors.name ? 'border-red-500' : ''}
                     />
+                    {validationErrors.name && <p className="text-red-500">{validationErrors.name}</p>}
                     <input
                         type='email'
                         placeholder='your@email.com'
                         value={email}
                         onChange={e => setEmail(e.target.value)}
+                        className={validationErrors.email ? 'border-red-500' : ''}
                     />
+                    {validationErrors.email && <p className="text-red-500">{validationErrors.email}</p>}
                     <input
                         type="password"
                         placeholder='password'
                         value={password}
                         onChange={e => setPassword(e.target.value)}
+                        className={validationErrors.password ? 'border-red-500' : ''}
                     />
+                    {validationErrors.password && <p className="text-red-500">{validationErrors.password}</p>}
                     <button className='primary'>Register</button>
                     <div className='text-center py-2 text-gray-500'>
                         Already a member?
@@ -59,4 +75,4 @@ const RegisterPage = () => {
     )
 }
 
-export default RegisterPage
+export default RegisterPage;
