@@ -103,6 +103,7 @@ const BookingWidget = ({ place }) => {
         color: 'red',
         fontSize: '12px',
         marginTop: '4px',
+        fontStyle: 'italic',
     };
 
     return (
