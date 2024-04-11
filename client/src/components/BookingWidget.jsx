@@ -3,6 +3,7 @@ import { differenceInCalendarDays } from "date-fns";
 import axios from 'axios';
 import { Navigate } from 'react-router-dom';
 import { UserContext } from '../context/UserContext';
+import { validateGuests, validateName, validateMobile } from '../validation';
 
 
 const BookingWidget = ({ place }) => {
@@ -21,6 +22,9 @@ const BookingWidget = ({ place }) => {
     const [name, setName] = useState('');
     const [mobile, setMobile] = useState('')
     const [redirect, setRedirect] = useState('');
+    const [guestsError, setGuestsError] = useState('');
+    const [nameError, setNameError] = useState('');
+    const [mobileError, setMobileError] = useState('');
 
     const { user } = useContext(UserContext);
 
@@ -54,6 +58,34 @@ const BookingWidget = ({ place }) => {
     };
 
     const bookingHandler = async () => {
+        // Reset previous errors
+
+        setGuestsError('');
+        setNameError('');
+        setMobileError('');
+
+        // Validate input fields
+        let isValid = true;
+
+        if (!validateGuests(numberOfGuests)) {
+            setGuestsError('Please enter a valid number of guests.');
+            isValid = false;
+        }
+        if (!validateName(name)) {
+            setNameError('Please enter a valid name.');
+            isValid = false;
+        }
+        if (!validateMobile(mobile)) {
+            setMobileError('Please enter a valid mobile number.');
+            isValid = false;
+        }
+
+        // If validation fails, return without making the booking request
+        if (!isValid) {
+            return;
+        }
+
+
         const response = await axios.post('/bookings', {
             checkInDate, checkOutDate, numberOfGuests, name, mobile,
             place: place._id,
@@ -67,6 +99,12 @@ const BookingWidget = ({ place }) => {
         return <Navigate to={redirect} />
     }
 
+    const errorStyle = {
+        color: 'red',
+        fontSize: '12px',
+        marginTop: '4px',
+    };
+
     return (
         <div>
             <div className='bg-white shadow p-4 rounded-2xl'>
@@ -78,6 +116,7 @@ const BookingWidget = ({ place }) => {
                         <div className='py-3 px-4'>
                             <label>Check In:</label>
                             <input type="date" value={checkInDate} min={today} onChange={handleCheckInChange} />
+
                         </div>
                         <div className='border-l py-3 px-4'>
                             <label>Check Out:</label>
@@ -87,14 +126,17 @@ const BookingWidget = ({ place }) => {
                     <div className='border-t py-3 px-4'>
                         <label>Guests:</label>
                         <input type="number" value={numberOfGuests} onChange={e => setNumberOfGuests(e.target.value)} />
+                        {guestsError && <div style={errorStyle}>{guestsError}</div>}
                     </div>
                     {numberOfNights > 0 && (
                         <div className='border-t py-3 px-4'>
                             <label>Name:</label>
                             <input type="text" value={name} onChange={e => setName(e.target.value)} />
+                            {nameError && <div style={errorStyle}>{nameError}</div>}
 
                             <label>Mobile No:</label>
                             <input type="tel" value={mobile} onChange={e => setMobile(e.target.value)} />
+                            {mobileError && <div style={errorStyle}>{mobileError}</div>}
                         </div>
                     )}
                 </div>
