@@ -5,7 +5,7 @@ import { Navigate } from 'react-router-dom';
 import { UserContext } from '../context/UserContext';
 
 
-const ReservationForm = ({ place }) => {
+const BookingWidget = ({ place }) => {
     // Get today's date in the format YYYY-MM-DD
     const today = new Date().toISOString().split('T')[0];
 
@@ -109,4 +109,4 @@ const ReservationForm = ({ place }) => {
     );
 };
 
-export default ReservationForm;
+export default BookingWidget;
