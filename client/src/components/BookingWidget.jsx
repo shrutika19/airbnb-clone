@@ -57,6 +57,32 @@ const BookingWidget = ({ place }) => {
         setCheckOutDate(selectedDate);
     };
 
+    const initPayment = (data) => {
+        const options = {
+            key: "",
+            amount: data.amount,
+            currency: data.currency,
+            name: place.name,
+            description: "Test Transaction",
+            order_id: data.id,
+            handler: async (response) => {
+                try {
+                    const verifyUrl = "http://localhost:3000/verify";
+                    const { data } = await axios.post(verifyUrl, response);
+                    console.log(data);
+                } catch (error) {
+                    console.log(error)
+                }
+            },
+            theme: {
+                color: "#F5385D",
+            },
+        };
+        const rzp1 = new window.Razorpay(options);
+        console.log(rzp1)
+        rzp1.open();
+    }
+
     const bookingHandler = async () => {
         // Reset previous errors
 
@@ -85,14 +111,24 @@ const BookingWidget = ({ place }) => {
             return;
         }
 
+        const totalPrice = numberOfNights * place.price * numberOfGuests
+        try {
+            const checkOutUrl = "http://localhost:3000/checkout";
+            const { data } = await axios.post(checkOutUrl, { amount: totalPrice });
+            console.log(data);
+            initPayment(data.data)
+        } catch (error) {
+            console.log(error)
 
-        const response = await axios.post('/bookings', {
-            checkInDate, checkOutDate, numberOfGuests, name, mobile,
-            place: place._id,
-            price: numberOfNights * place.price * numberOfGuests,
-        });
-        const bookingId = response.data._id;
-        setRedirect(`/account/bookings/${bookingId}`);
+        }
+
+        // const response = await axios.post('/bookings', {
+        //     checkInDate, checkOutDate, numberOfGuests, name, mobile,
+        //     place: place._id,
+        //     price: numberOfNights * place.price * numberOfGuests,
+        // });
+        // const bookingId = response.data._id;
+        // setRedirect(`/account/bookings/${bookingId}`);
     }
 
     if (redirect) {
