@@ -57,19 +57,31 @@ const BookingWidget = ({ place }) => {
         setCheckOutDate(selectedDate);
     };
 
-    const initPayment = (data) => {
+    const initPayment = async (data) => {
+        const { data: { key } } = await axios.get("http://localhost:3000/api/getkey")
         const options = {
-            key: "",
+            key: key,
             amount: data.amount,
             currency: data.currency,
             name: place.name,
             description: "Test Transaction",
+            image: "https://avatars.githubusercontent.com/u/96648429?s=96&v=4",
             order_id: data.id,
             handler: async (response) => {
                 try {
                     const verifyUrl = "http://localhost:3000/verify";
                     const { data } = await axios.post(verifyUrl, response);
                     console.log(data);
+                    if (data.message === "Payment verified successfully") {
+                        // Payment is successful, redirect to the booking page
+                        const response = await axios.post('/bookings', {
+                            checkInDate, checkOutDate, numberOfGuests, name, mobile,
+                            place: place._id,
+                            price: numberOfNights * place.price * numberOfGuests,
+                        });
+                        const bookingId = response.data._id;
+                        setRedirect(`/account/bookings/${bookingId}`);
+                    }
                 } catch (error) {
                     console.log(error)
                 }

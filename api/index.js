@@ -25,18 +25,19 @@ app.use(cors({
 }));
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static(__dirname + '/assests'))
 app.use(cookieParser());
 
 mongoose.connect(process.env.MONGO_URL);
 
+const instance = new Razorpay({
+    key_id: process.env.RAZORPAY_API_KEY,
+    key_secret: process.env.RAZORPAY_API_SECRET,
+});
 
 app.post('/checkout', async (req, res) => {
     try {
-        const instance = new Razorpay({
-            key_id: process.env.RAZORPAY_API_KEY,
-            key_secret: process.env.RAZORPAY_API_SECRET,
-        });
         const options = {
             amount: req.body.amount * 100,
             currency: "INR",
@@ -62,7 +63,7 @@ app.post('/verify', async (req, res) => {
         const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
         const sign = razorpay_order_id + "|" + razorpay_payment_id;
         const expectedSign = crypto
-            .createHmac("sha256", process.env.KEY_SECRET)
+            .createHmac("sha256", process.env.RAZORPAY_API_SECRET)
             .update(sign.toString())
             .digest("hex");
         if (razorpay_signature === expectedSign) {
@@ -74,6 +75,10 @@ app.post('/verify', async (req, res) => {
         console.log(error);
         res.status(500).json({ message: "Internal Sever Error!" });
     }
+})
+
+app.get('/api/getkey', (req, res) => {
+    return res.status(200).json({ key: process.env.RAZORPAY_API_KEY })
 })
 
 function getUserDataFromReq(req) {
